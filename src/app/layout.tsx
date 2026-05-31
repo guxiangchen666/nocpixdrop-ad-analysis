@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   description: 'Mock Meta ads and creative analysis dashboard',
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="zh-CN">

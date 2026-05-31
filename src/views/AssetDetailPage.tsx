@@ -7,6 +7,7 @@ import type { ReactNode } from 'react';
 import { Area, AreaChart, CartesianGrid, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { ExportViewButton } from '../components/layout/ExportViewButton';
 import { RefreshDataButton } from '../components/layout/RefreshDataButton';
+import { useDataRefreshSignal } from '../hooks/useDataRefreshSignal';
 import {
   getAssetAudienceCopyMatrix,
   getAssetDetail,
@@ -42,6 +43,7 @@ export function AssetDetailPage({ assetGroupKey }: { assetGroupKey: string }) {
   const [adFilter, setAdFilter] = useState('__all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const refreshSignal = useDataRefreshSignal();
 
   useEffect(() => {
     let cancelled = false;
@@ -74,7 +76,7 @@ export function AssetDetailPage({ assetGroupKey }: { assetGroupKey: string }) {
     return () => {
       cancelled = true;
     };
-  }, [assetGroupKey, range]);
+  }, [assetGroupKey, range, refreshSignal]);
 
   const filteredCombinations = useMemo(() => {
     return matrix

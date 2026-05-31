@@ -11,6 +11,7 @@ import { CreativePreviewModal } from '../components/creatives/CreativePreviewMod
 import { CreativeTrendPanel } from '../components/creatives/CreativeTrendPanel';
 import { ExportViewButton } from '../components/layout/ExportViewButton';
 import { RefreshDataButton } from '../components/layout/RefreshDataButton';
+import { useDataRefreshSignal } from '../hooks/useDataRefreshSignal';
 import { getAds } from '../services/adsService';
 import { getCreativeAssetGroupByCreativeId, getCreativeById, getCreativePerformance, getCreativeTrend } from '../services/creativesService';
 import type { AdDailyRecord } from '../types/ads';
@@ -45,6 +46,7 @@ export function CreativeDetailPage({ creativeId }: { creativeId: string }) {
   const [adModalOpen, setAdModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const refreshSignal = useDataRefreshSignal();
 
   useEffect(() => {
     let cancelled = false;
@@ -80,7 +82,7 @@ export function CreativeDetailPage({ creativeId }: { creativeId: string }) {
     return () => {
       cancelled = true;
     };
-  }, [creativeId, trendRange]);
+  }, [creativeId, refreshSignal, trendRange]);
 
   if (loading && !creative) {
     return <div className="creative-analysis-state">Loading creative detail...</div>;

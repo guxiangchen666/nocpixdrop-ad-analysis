@@ -11,6 +11,7 @@ import { KpiCards } from '../components/creative-analysis/KpiCards';
 import { ExportViewButton } from '../components/layout/ExportViewButton';
 import { RefreshDataButton } from '../components/layout/RefreshDataButton';
 import { ProductSelector } from '../components/creative-analysis/ProductSelector';
+import { useDataRefreshSignal } from '../hooks/useDataRefreshSignal';
 import { generateCreativeBrief, getAiCreativeRecommendations } from '../services/aiRecommendationService';
 import type { CreativeAnalysisDataset, CreativeAnalysisItem, CreativeAnalysisRange, CreativeInsightsDataset, ProductOption } from '../services/creativeAnalysisService';
 import { getCreativeAnalysisDataset, getCreativeInsights, getProducts } from '../services/creativeAnalysisService';
@@ -36,6 +37,7 @@ export function CreativeAnalysis() {
   const [modalOpen, setModalOpen] = useState(false);
   const [brief, setBrief] = useState<CreativeBrief | null>(null);
   const [trendRange, setTrendRange] = useState<TrendRange>('7d');
+  const refreshSignal = useDataRefreshSignal();
 
   useEffect(() => {
     let cancelled = false;
@@ -64,7 +66,7 @@ export function CreativeAnalysis() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [refreshSignal]);
 
   const currentProduct = products.find((product) => product.sku === selectedSku);
   const modalAd = useMemo(() => (selectedCreative ? toAdDailyRecord(selectedCreative, currentProduct) : null), [currentProduct, selectedCreative]);
@@ -105,7 +107,7 @@ export function CreativeAnalysis() {
     return () => {
       cancelled = true;
     };
-  }, [range, selectedSku]);
+  }, [range, refreshSignal, selectedSku]);
 
   const openCreativeDetail = (creative: CreativeAnalysisItem) => {
     setSelectedCreative(creative);

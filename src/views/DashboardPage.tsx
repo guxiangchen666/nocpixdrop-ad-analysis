@@ -9,6 +9,7 @@ import { TopCreatives } from '../components/dashboard/TopCreatives';
 import { TrendChart } from '../components/dashboard/TrendChart';
 import { ExportViewButton } from '../components/layout/ExportViewButton';
 import { RefreshDataButton } from '../components/layout/RefreshDataButton';
+import { useDataRefreshSignal } from '../hooks/useDataRefreshSignal';
 import { getDashboardAvailableDateRange, getDashboardSummary } from '../services/dashboardService';
 import type { DashboardDateRange, DashboardSummary } from '../types/dashboard';
 
@@ -18,6 +19,7 @@ export function DashboardPage() {
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const refreshSignal = useDataRefreshSignal();
 
   useEffect(() => {
     let cancelled = false;
@@ -43,7 +45,7 @@ export function DashboardPage() {
     return () => {
       cancelled = true;
     };
-  }, [dateRange]);
+  }, [dateRange, refreshSignal]);
 
   if (loading && !summary) {
     return <div className="creative-analysis-state">Loading dashboard...</div>;

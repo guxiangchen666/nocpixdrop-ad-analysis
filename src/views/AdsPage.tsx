@@ -10,6 +10,7 @@ import { getAdCreativeRelations } from '../services/adCreativeRelationService';
 import { ExportViewButton } from '../components/layout/ExportViewButton';
 import { RefreshDataButton } from '../components/layout/RefreshDataButton';
 import { EmptyState } from '../components/common/EmptyState';
+import { useDataRefreshSignal } from '../hooks/useDataRefreshSignal';
 import type { AdDailyRecord } from '../types/ads';
 import type { CreativeRecord } from '../types/creatives';
 import type { AdCreativeRelation } from '../types/feishu';
@@ -28,6 +29,7 @@ export function AdsPage() {
   const [relations, setRelations] = useState<AdCreativeRelation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const refreshSignal = useDataRefreshSignal();
 
   useEffect(() => {
     let cancelled = false;
@@ -62,7 +64,7 @@ export function AdsPage() {
     return () => {
       cancelled = true;
     };
-  }, [filters]);
+  }, [filters, refreshSignal]);
 
   const creativesById = useMemo(() => {
     const map = new Map<string, (typeof creatives)[number]>();

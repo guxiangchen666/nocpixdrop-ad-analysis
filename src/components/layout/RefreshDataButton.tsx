@@ -2,6 +2,7 @@
 
 import { Button } from 'animal-island-ui';
 import { useState } from 'react';
+import { DATA_REFRESH_EVENT } from '../../hooks/useDataRefreshSignal';
 import { clearDataBundleCache } from '../../services/dataStore';
 
 export function RefreshDataButton() {
@@ -10,9 +11,8 @@ export function RefreshDataButton() {
   const refreshData = () => {
     setRefreshing(true);
     clearDataBundleCache();
-    window.setTimeout(() => {
-      window.location.reload();
-    }, 80);
+    window.dispatchEvent(new Event(DATA_REFRESH_EVENT));
+    window.setTimeout(() => setRefreshing(false), 600);
   };
 
   return (

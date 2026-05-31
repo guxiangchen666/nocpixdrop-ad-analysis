@@ -6,6 +6,7 @@ import { CreativeGrid } from '../components/creatives/CreativeGrid';
 import { ExportViewButton } from '../components/layout/ExportViewButton';
 import { RefreshDataButton } from '../components/layout/RefreshDataButton';
 import { EmptyState } from '../components/common/EmptyState';
+import { useDataRefreshSignal } from '../hooks/useDataRefreshSignal';
 import { getCreativeAssetGroups, getCreativeDateBounds } from '../services/creativesService';
 import { getCreatives, type CreativeFilters as CreativeFiltersState } from '../services/creativesService';
 import type { CreativeAssetGroup, CreativeRecord } from '../types/creatives';
@@ -18,6 +19,7 @@ export function CreativesPage() {
   const [dateBounds, setDateBounds] = useState({ minDate: '', maxDate: '' });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const refreshSignal = useDataRefreshSignal();
 
   useEffect(() => {
     let cancelled = false;
@@ -48,7 +50,7 @@ export function CreativesPage() {
     return () => {
       cancelled = true;
     };
-  }, [filters]);
+  }, [filters, refreshSignal]);
 
   const products = unique(allCreatives.map((creative) => creative.product).filter((item): item is string => Boolean(item)));
   const materialTypes = unique(allCreatives.map((creative) => creative.materialType).filter((item): item is string => Boolean(item)));
